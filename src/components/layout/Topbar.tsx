@@ -1,14 +1,20 @@
 import {
-  Bell,
   Search,
   Sun,
+  Moon,
   Bluetooth,
   BatteryFull,
+  Settings,
 } from "lucide-react";
 import { useApp } from "../../context/AppContext";
 
 export default function Topbar() {
-  const { connectedPrinterId, connectedPrinterName } = useApp();
+  const {
+  printerSession,
+  setPage,
+  theme,
+  toggleTheme,
+} = useApp();
   return (
     <header className="h-20 border-b border-slate-800 bg-[#0F172A] px-8 flex items-center justify-between">
 
@@ -41,7 +47,7 @@ export default function Topbar() {
 
         <div
            className={`flex items-center gap-2 rounded-xl px-4 py-2 transition ${
-            connectedPrinterId
+            printerSession.connected
               ? "bg-green-500/20 text-green-400"
               : "bg-slate-800 text-slate-400"
           }`}
@@ -50,11 +56,11 @@ export default function Topbar() {
 
           <div className="flex flex-col leading-tight">
              <span className="text-sm font-medium">
-              {connectedPrinterId ? "Connected" : "No Printer"}
+              {printerSession.connected ? "Connected" : "No Printer"}
             </span>
 
             <span className="text-xs opacity-80">
-              {connectedPrinterName || "Connect a printer"}
+              {printerSession.name || "Connect a printer"}
             </span>
           </div>
         </div>
@@ -67,16 +73,20 @@ export default function Topbar() {
 
         </div>
 
-        <button className="w-11 h-11 rounded-xl bg-slate-800 flex items-center justify-center hover:bg-slate-700 transition">
-
-          <Bell size={18} />
-
+        <button
+          onClick={() => setPage("settings")}
+          title="Settings"
+          className="w-11 h-11 rounded-xl bg-slate-800 flex items-center justify-center hover:bg-slate-700 transition"
+        >
+          <Settings size={18} />
         </button>
 
-        <button className="w-11 h-11 rounded-xl bg-slate-800 flex items-center justify-center hover:bg-slate-700 transition">
-
-          <Sun size={18} />
-
+        <button
+            onClick={toggleTheme}
+            title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            className="w-11 h-11 rounded-xl bg-slate-800 flex items-center justify-center hover:bg-slate-700 transition"
+          >
+            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
         </button>
 
       </div>

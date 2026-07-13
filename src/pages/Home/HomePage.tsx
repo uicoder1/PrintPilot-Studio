@@ -11,23 +11,16 @@ export default function HomePage() {
 
       <WelcomeBanner />
 
+      <ConnectedDevice />
+
       <QuickActions />
 
       <div className="grid grid-cols-2 gap-6">
-
         <PrinterStatus />
-
-        <ConnectedDevice />
-
-      </div>
-
-      <div className="grid grid-cols-2 gap-6">
-
         <RecentPrints />
-
-        <Statistics />
-
       </div>
+
+      <Statistics />
 
     </div>
   );

@@ -1,3 +1,6 @@
+import { User } from "lucide-react";
+import { useState } from "react";
+import ProfileModal from "../profile/ProfileModal";
 import { useApp } from "../../context/AppContext";
 import {
   House,
@@ -9,7 +12,7 @@ import {
   QrCode,
   LayoutTemplate,
   History,
-  Settings,
+  
 } from "lucide-react";
 
 const menu = [
@@ -22,11 +25,17 @@ const menu = [
   { icon: QrCode, title: "QR Code", page: "qrcode" },
   { icon: LayoutTemplate, title: "Templates", page: "templates" },
   { icon: History, title: "History", page: "history" },
-  { icon: Settings, title: "Settings", page: "settings" },
+  
 ];
 
 export default function Sidebar() {
-  const { page, setPage } = useApp();
+  const {
+  page,
+  setPage,
+  profileImage,
+  userName,
+} = useApp();
+  const [profileOpen, setProfileOpen] = useState(false);
 
   return (
     <aside className="w-72 bg-[#0B1120] border-r border-slate-800 flex flex-col">
@@ -67,21 +76,51 @@ export default function Sidebar() {
         })}
       </nav>
 
+      
+
       {/* Footer */}
-      <div className="border-t border-slate-800 p-5">
-        <div className="rounded-xl bg-slate-900 p-4">
+      <div className="border-t border-slate-800 p-5 space-y-3">
 
-          <p className="text-green-400 text-sm font-semibold">
-            ● Printer Ready
-          </p>
+  <button
+  onClick={() => setProfileOpen(true)}
+  className="flex w-full items-center gap-3 rounded-xl bg-slate-900 px-4 py-3 transition hover:bg-slate-800"
+>
+  {profileImage ? (
+    <img
+      src={profileImage}
+      alt="Profile"
+      className="h-10 w-10 rounded-full object-cover border border-slate-600"
+    />
+  ) : (
+    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-800">
+      <User size={18} />
+    </div>
+  )}
 
-          <p className="text-slate-400 text-xs mt-2">
-            PrintPilot Studio v1.0
-          </p>
+  <div className="flex flex-col items-start">
+    <span className="text-sm font-semibold text-white">
+      {userName}
+    </span>
 
-        </div>
-      </div>
+    <span className="text-xs text-slate-400">
+      View Profile
+    </span>
+  </div>
+</button>
 
+  <div className="rounded-xl bg-slate-900 p-4">
+    
+
+    <p className="mt-1 text-s text-slate-400">
+      PrintPilot Studio v1.0
+    </p>
+  </div>
+
+</div>
+    <ProfileModal
+  open={profileOpen}
+  onClose={() => setProfileOpen(false)}
+/>
     </aside>
   );
 }

@@ -1,10 +1,9 @@
-
 mod bluetooth;
 use bluetooth::{get_adapter, BluetoothState};
 use bluetooth::printer::{build_image_print_job, build_test_print_job};
 use bluetooth::image_decoder::decode_base64_image;
 use bluetooth::renderer::render_test_pattern;
-use btleplug::api::{Central, CharPropFlags, Peripheral as _, ScanFilter, WriteType};
+use btleplug::api::{Central, CharPropFlags, Characteristic, Peripheral as _, ScanFilter, WriteType};
 use serde::Serialize;
 use tokio::time::{sleep, Duration};
 
@@ -22,10 +21,30 @@ async fn scan_printers(
 ) -> Result<Vec<PrinterDevice>, String> {
     let adapter = get_adapter(&state).await?;
 
-    adapter
-        .start_scan(ScanFilter::default())
-        .await
-        .map_err(|e| e.to_string())?;
+    use btleplug::api::Central;
+
+if !adapter
+    .adapter_info()
+    .await
+    .map(|_| true)
+    .unwrap_or(false)
+{
+    return Err("Bluetooth is turned off".to_string());
+}
+
+    if let Err(e) = adapter.start_scan(ScanFilter::default()).await {
+    let msg = e.to_string().to_lowercase();
+
+    if msg.contains("powered")
+        || msg.contains("bluetooth")
+        || msg.contains("adapter")
+        || msg.contains("radio")
+    {
+        return Err("Bluetooth is turned off".to_string());
+    }
+
+    return Err(e.to_string());
+}
 
     sleep(Duration::from_secs(3)).await;
 
@@ -33,7 +52,13 @@ async fn scan_printers(
     // everything the adapter discovered during the scan window.
     let _ = adapter.stop_scan().await;
 
-    let peripherals = adapter.peripherals().await.map_err(|e| e.to_string())?;
+    let peripherals = match adapter.peripherals().await {
+    Ok(p) => p,
+    Err(e) => {
+        println!("PERIPHERALS ERROR: {:?}", e);
+        return Err(e.to_string());
+    }
+};
 
     let mut devices = Vec::new();
     let mut cache = state.peripherals.lock().await;
@@ -44,6 +69,9 @@ async fn scan_printers(
             let name = properties
                 .local_name
                 .unwrap_or_else(|| format!("Unknown ({})", id));
+            let lower = name.to_lowercase();
+
+            
 
             devices.push(PrinterDevice {
                 id: id.clone(),
@@ -137,17 +165,101 @@ async fn disconnect_printer(
 
     Ok("Disconnected".to_string())
 }
-/// Sends the built-in test pattern to the printer.
+
 #[tauri::command]
-async fn print_text(
+async fn is_printer_connected(
     state: tauri::State<'_, BluetoothState>,
     id: String,
-    _text: String,
-) -> Result<String, String> {
+) -> Result<bool, String> {
+    let peripheral = {
+        let cache = state.peripherals.lock().await;
+
+        cache
+            .get(&id)
+            .cloned()
+            .ok_or("Printer not found")?
+    };
+
+    peripheral
+        .is_connected()
+        .await
+        .map_err(|e| e.to_string())
+}
+/// Writes `data` to the printer identified by `id`, in CHUNK_SIZE pieces.
+///
+/// Why this exists: cheap BLE thermal printers commonly drop their
+/// connection after a short idle period (e.g. the time between clicking
+/// "Connect" and actually clicking "Print"). When that happens, the
+/// `Peripheral`/`Characteristic` handles cached at connect-time go stale.
+/// On Windows this surfaces as `HRESULT(0x80000013)` / "The object has
+/// been closed" the moment you try to write to it - the OS has already
+/// torn down the native BLE object out from under btleplug.
+///
+/// This wraps the write loop with a connectivity check up front, and a
+/// one-time reconnect + service/characteristic re-discovery + retry if
+/// the write still fails partway through. This does not change anything
+/// about how the image/text data itself is built - only how robustly it
+/// gets sent once the printer connection may have gone stale.
+async fn write_to_printer(
+    state: &tauri::State<'_, BluetoothState>,
+    id: &str,
+    data: &[u8],
+) -> Result<(), String> {
+    const CHUNK_SIZE: usize = 180;
+
+    async fn reconnect_and_get_char(
+        state: &tauri::State<'_, BluetoothState>,
+        id: &str,
+    ) -> Result<(btleplug::platform::Peripheral, Characteristic, WriteType), String> {
+        let peripheral = {
+            let cache = state.peripherals.lock().await;
+            cache
+                .get(id)
+                .cloned()
+                .ok_or("Printer not found. Please scan again.")?
+        };
+
+        peripheral
+            .connect()
+            .await
+            .map_err(|e| e.to_string())?;
+
+        peripheral
+            .discover_services()
+            .await
+            .map_err(|e| e.to_string())?;
+
+        let characteristics = peripheral.characteristics();
+
+        let write_char = characteristics
+            .iter()
+            .find(|c| c.properties.contains(CharPropFlags::WRITE_WITHOUT_RESPONSE))
+            .or_else(|| {
+                characteristics
+                    .iter()
+                    .find(|c| c.properties.contains(CharPropFlags::WRITE))
+            })
+            .cloned()
+            .ok_or("No writable characteristic found on this printer")?;
+
+        {
+            let mut chars = state.write_characteristics.lock().await;
+            chars.insert(id.to_string(), write_char.clone());
+        }
+
+        let write_type = if write_char.properties.contains(CharPropFlags::WRITE) {
+            WriteType::WithResponse
+        } else {
+            WriteType::WithoutResponse
+        };
+
+        Ok((peripheral, write_char, write_type))
+    }
+
     let peripheral = {
         let cache = state.peripherals.lock().await;
         cache
-            .get(&id)
+            .get(id)
             .cloned()
             .ok_or("Printer not connected. Please connect first.")?
     };
@@ -155,33 +267,72 @@ async fn print_text(
     let write_char = {
         let chars = state.write_characteristics.lock().await;
         chars
-            .get(&id)
+            .get(id)
             .cloned()
             .ok_or("No writable characteristic. Please connect first.")?
     };
 
-    let write_type = if write_char.properties.contains(CharPropFlags::WRITE) {
-        WriteType::WithResponse
+    let already_connected = peripheral.is_connected().await.unwrap_or(false);
+
+    let (peripheral, write_char, write_type) = if !already_connected {
+        // Known-stale up front - skip straight to reconnecting instead of
+        // wasting a write attempt we already know will fail.
+        reconnect_and_get_char(state, id).await?
     } else {
-        WriteType::WithoutResponse
+        let write_type = if write_char.properties.contains(CharPropFlags::WRITE) {
+            WriteType::WithResponse
+        } else {
+            WriteType::WithoutResponse
+        };
+        (peripheral, write_char, write_type)
     };
 
+    let mut reconnected_once = !already_connected; // already reconnected above if true
+
+    let mut chunks = data.chunks(CHUNK_SIZE);
+    let mut current = (peripheral, write_char, write_type);
+
+    while let Some(chunk) = chunks.next() {
+        let write_result = current.0.write(&current.1, chunk, current.2).await;
+
+        if let Err(e) = write_result {
+            if reconnected_once {
+                // Already tried recovering once this call - don't loop forever.
+                return Err(e.to_string());
+            }
+
+            // Likely a stale/closed handle (e.g. RO_E_CLOSED on Windows).
+            // Reconnect, re-discover the characteristic, and retry this
+            // same chunk once before giving up.
+            reconnected_once = true;
+            current = reconnect_and_get_char(state, id).await?;
+
+            current
+                .0
+                .write(&current.1, chunk, current.2)
+                .await
+                .map_err(|e| e.to_string())?;
+        }
+
+        tokio::time::sleep(Duration::from_millis(10)).await;
+    }
+
+    Ok(())
+}
+
+#[tauri::command]
+async fn print_text(
+    state: tauri::State<'_, BluetoothState>,
+    id: String,
+    _text: String,
+) -> Result<String, String> {
     let render = render_test_pattern()
         .map_err(|e| e.to_string())?;
 
     let data = build_test_print_job(&render)
         .map_err(|e| e.to_string())?;
 
-    const CHUNK_SIZE: usize = 180;
-
-    for chunk in data.chunks(CHUNK_SIZE) {
-        peripheral
-            .write(&write_char, chunk, write_type)
-            .await
-            .map_err(|e| e.to_string())?;
-
-        tokio::time::sleep(Duration::from_millis(10)).await;
-    }
+    write_to_printer(&state, &id, &data).await?;
 
     Ok("Printed".to_string())
 }
@@ -192,44 +343,13 @@ async fn print_image(
     id: String,
     image: String,
 ) -> Result<String, String> {
-    let peripheral = {
-        let cache = state.peripherals.lock().await;
-        cache
-            .get(&id)
-            .cloned()
-            .ok_or("Printer not connected. Please connect first.")?
-    };
-
-    let write_char = {
-        let chars = state.write_characteristics.lock().await;
-        chars
-            .get(&id)
-            .cloned()
-            .ok_or("No writable characteristic. Please connect first.")?
-    };
-
-    let write_type = if write_char.properties.contains(CharPropFlags::WRITE) {
-        WriteType::WithResponse
-    } else {
-        WriteType::WithoutResponse
-    };
-
     let image = decode_base64_image(&image)
         .map_err(|e| e.to_string())?;
 
     let data = build_image_print_job(image)
         .map_err(|e| e.to_string())?;
 
-    const CHUNK_SIZE: usize = 180;
-
-    for chunk in data.chunks(CHUNK_SIZE) {
-        peripheral
-            .write(&write_char, chunk, write_type)
-            .await
-            .map_err(|e| e.to_string())?;
-
-        tokio::time::sleep(Duration::from_millis(10)).await;
-    }
+    write_to_printer(&state, &id, &data).await?;
 
     Ok("Printed".to_string())
 }
@@ -251,10 +371,11 @@ pub fn run() {
             scan_printers,
             connect_printer,
             disconnect_printer,
+            is_printer_connected,
             print_text,
             print_image
+            
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
-

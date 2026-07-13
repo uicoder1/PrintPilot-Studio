@@ -14,8 +14,10 @@ import HistoryPage from "../../pages/History";
 import SettingsPage from "../../pages/Settings";
 
 import { useApp } from "../../context/AppContext";
+import usePrinterMonitor from "../../hooks/usePrinterMonitor";
 
 export default function AppLayout() {
+  usePrinterMonitor();
   const { page } = useApp();
 
   const renderPage = () => {
