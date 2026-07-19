@@ -21,30 +21,10 @@ async fn scan_printers(
 ) -> Result<Vec<PrinterDevice>, String> {
     let adapter = get_adapter(&state).await?;
 
-    use btleplug::api::Central;
-
-if !adapter
-    .adapter_info()
-    .await
-    .map(|_| true)
-    .unwrap_or(false)
-{
-    return Err("Bluetooth is turned off".to_string());
-}
-
-    if let Err(e) = adapter.start_scan(ScanFilter::default()).await {
-    let msg = e.to_string().to_lowercase();
-
-    if msg.contains("powered")
-        || msg.contains("bluetooth")
-        || msg.contains("adapter")
-        || msg.contains("radio")
-    {
-        return Err("Bluetooth is turned off".to_string());
-    }
-
-    return Err(e.to_string());
-}
+    adapter
+        .start_scan(ScanFilter::default())
+        .await
+        .map_err(|e| e.to_string())?;
 
     sleep(Duration::from_secs(3)).await;
 
@@ -52,13 +32,7 @@ if !adapter
     // everything the adapter discovered during the scan window.
     let _ = adapter.stop_scan().await;
 
-    let peripherals = match adapter.peripherals().await {
-    Ok(p) => p,
-    Err(e) => {
-        println!("PERIPHERALS ERROR: {:?}", e);
-        return Err(e.to_string());
-    }
-};
+    let peripherals = adapter.peripherals().await.map_err(|e| e.to_string())?;
 
     let mut devices = Vec::new();
     let mut cache = state.peripherals.lock().await;
@@ -211,13 +185,31 @@ async fn write_to_printer(
         state: &tauri::State<'_, BluetoothState>,
         id: &str,
     ) -> Result<(btleplug::platform::Peripheral, Characteristic, WriteType), String> {
-        let peripheral = {
-            let cache = state.peripherals.lock().await;
-            cache
-                .get(id)
-                .cloned()
-                .ok_or("Printer not found. Please scan again.")?
-        };
+        // NEW: don't reuse the cached Peripheral handle here. Once Windows
+        // fully closes the underlying native BLE object (the
+        // RO_E_CLOSED / 0x80000013 error), calling .connect() again on
+        // that same handle fails with the identical error - the wrapper
+        // still points at a disposed object. Instead, ask the adapter for
+        // a fresh Peripheral for this device id and replace the cached
+        // one with it before doing anything else.
+        let adapter = get_adapter(state).await?;
+
+        let fresh_peripherals = adapter
+            .peripherals()
+            .await
+            .map_err(|e| e.to_string())?;
+
+        let peripheral = fresh_peripherals
+            .into_iter()
+            .find(|p| p.id().to_string() == id)
+            .ok_or(
+                "Printer is no longer visible to Bluetooth. Please scan and connect again.",
+            )?;
+
+        {
+            let mut cache = state.peripherals.lock().await;
+            cache.insert(id.to_string(), peripheral.clone());
+        }
 
         peripheral
             .connect()
