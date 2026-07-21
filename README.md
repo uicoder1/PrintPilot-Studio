@@ -1,145 +1,217 @@
-<div align="center">
+<p align="center">
+  <img src="src/assets/logo/logo.png" alt="PrintPilot Studio Logo" width="140">
+</p>
 
-<img src="src/assets/logo/logo.png" alt="PrintPilot Studio Logo" width="120"/>
+<h1 align="center">PrintPilot Studio</h1>
 
-# PrintPilot Studio
+<p align="center">
+Modern Desktop Software for Bluetooth Thermal Printers
+</p>
 
-### Modern Desktop Software for Bluetooth Thermal Printers
+<p align="center">
 
-Print images, labels, QR codes, text, and receipts with ease using a modern desktop application built for ESC/POS compatible Bluetooth thermal printers.
+![Tauri](https://img.shields.io/badge/Tauri-v2-24C8DB?logo=tauri&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
+![Rust](https://img.shields.io/badge/Rust-Backend-000000?logo=rust)
+![License](https://img.shields.io/badge/License-Source_Available-red)
 
-![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?style=for-the-badge)
-![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![Tauri](https://img.shields.io/badge/Tauri-v2-FFC131?style=for-the-badge&logo=tauri&logoColor=black)
-![License](https://img.shields.io/badge/License-Source_Available-success?style=for-the-badge)
-
-</div>
+</p>
 
 ---
 
-## 📸 Dashboard
+> ## 📜 Source-Available Project
+>
+> PrintPilot Studio is shared for **learning, transparency, and community contributions**.
+>
+> Commercial use, redistribution, relicensing, or creating competing products is **not permitted** without written permission from the author.
+>
+> Please review the **LICENSE** file before using or contributing to this project.
+
+---
 
 <p align="center">
-<img src="src/assets/screenshots/dashboard.png" width="100%" alt="Dashboard"/>
+<img src="src/assets/screenshots/dashboard.png" alt="Dashboard">
 </p>
 
 ---
 
 # 🚀 Overview
 
-PrintPilot Studio is a modern desktop application designed for Bluetooth thermal printers. It combines a clean and intuitive user interface with powerful printing capabilities, making it easy to print images, labels, QR codes, text, and receipts from a single application.
+PrintPilot Studio is a modern desktop application for Bluetooth thermal printers built with **Tauri**, **React**, **TypeScript**, and **Rust**.
 
-Built with **React**, **TypeScript**, **Rust**, and **Tauri**, PrintPilot Studio delivers native desktop performance while optimizing output for ESC/POS compatible thermal printers.
+The application simplifies thermal printing by providing a clean interface for printing images, labels, QR codes, documents, and text while automatically optimizing output using advanced thermal image processing techniques.
+
+Designed with performance, usability, and scalability in mind, PrintPilot Studio delivers a native desktop experience with a modern UI.
 
 ---
 
 # ✨ Features
 
-## 🖨 Printing
-
-- Bluetooth thermal printer support
-- Image printing with live preview
-- Label printing
-- QR code generation & printing
-- Text printing
-- Receipt printing
-
-## ⚙ Image Processing
-
-- Real-time thermal preview
-- Floyd–Steinberg dithering
-- Brightness adjustment
-- Contrast adjustment
-- Image rotation
-- Scaling & resizing
-
-## 💻 User Experience
-
-- Modern desktop interface
-- Native Windows application
-- Fast printer discovery
-- Device management
-- Clean and responsive UI
+- 🖨️ Bluetooth Thermal Printer Support
+- 🖼️ Advanced Thermal Image Processing
+- 🏷️ Label Printing
+- 📄 Document Printing
+- 📝 Text Printing
+- 🔳 QR Code Generation & Printing
+- ⚙️ Printer Management
+- 🌙 Light & Dark Theme
+- ⚡ Native Desktop Performance with Tauri
+- 🎨 Modern & Responsive User Interface
 
 ---
 
 # 📸 Screenshots
 
+## Dashboard
+
+<p align="center">
+<img src="src/assets/screenshots/dashboard.png" width="900">
+</p>
+
+---
+
 ## Printer Management
 
 <p align="center">
-<img src="src/assets/screenshots/printer-management.png" width="100%" alt="Printer Management"/>
+<img src="src/assets/screenshots/printer-management.png" width="900">
 </p>
 
 ---
 
-## Image Printing
+## Image Preview
 
 <p align="center">
-<img src="src/assets/screenshots/image-preview.png" width="100%" alt="Image Printing"/>
+<img src="src/assets/screenshots/image-preview.png" width="900">
 </p>
 
 ---
 
-## Thermal Image Optimization
+## Thermal Preview
 
 <p align="center">
-<img src="src/assets/screenshots/thermal-preview.png" width="100%" alt="Thermal Preview"/>
+<img src="src/assets/screenshots/thermal-preview.png" width="900">
 </p>
 
 ---
 
 # 🛠 Tech Stack
 
-| Frontend | Desktop | Printing |
-|-----------|----------|-----------|
-| React 19 | Tauri v2 | ESC/POS |
-| TypeScript | Rust | Bluetooth |
-| Tailwind CSS | Vite | Image Processing |
+## Frontend
+
+- React
+- TypeScript
+- Tailwind CSS
+- Vite
+
+## Backend
+
+- Rust
+- Tauri v2
+
+## Printing
+
+- ESC/POS
+- Bluetooth
+
+## Development
+
+- Git
+- GitHub
+- npm
+
+---
+
+# 📂 Project Structure
+
+```
+src/
+│
+├── assets/
+├── bluetooth/
+├── components/
+├── constants/
+├── context/
+├── hooks/
+├── lib/
+├── pages/
+├── routes/
+├── services/
+├── store/
+├── styles/
+├── types/
+├── utils/
+│
+└── src-tauri/
+```
 
 ---
 
 # 🚀 Getting Started
 
-## Clone the repository
+PrintPilot Studio is currently under active development.
+
+The source code is provided for learning, code review, and community contributions under the project's custom license.
+
+Commercial use, redistribution, relicensing, or creation of competing products is prohibited without written permission from the author.
+
+## Clone the Repository
 
 ```bash
 git clone https://github.com/uicoder1/PrintPilot-Studio.git
 ```
 
-## Install dependencies
+## Navigate to the Project
+
+```bash
+cd PrintPilot-Studio
+```
+
+## Install Dependencies
 
 ```bash
 npm install
 ```
 
-## Start development
+## Run Development Server
 
 ```bash
 npm run tauri dev
 ```
 
-## Build for production
+---
 
-```bash
-npm run tauri build
-```
+# 🗺️ Roadmap
+
+- [ ] PDF Printing Improvements
+- [ ] Batch Printing
+- [ ] Printer Profiles
+- [ ] More Label Templates
+- [ ] Auto Updates
+- [ ] Advanced Image Processing
+- [ ] Multi-language Support
 
 ---
 
-# 🗺 Roadmap
+# 🤝 Contributing
 
-- ✅ Bluetooth Printer Management
-- ✅ Image Printing
-- ✅ Label Printing
-- ✅ QR Code Printing
-- ✅ Text Printing
-- ✅ Thermal Image Optimization
-- 🔄 PDF Printing
-- 🔄 Printer Profiles
-- 🔄 Template Designer
-- 🔄 Multi-language Support
+Contributions are welcome.
+
+Whether you've found a bug, have an idea for a new feature, or want to improve the codebase, feel free to open an Issue or submit a Pull Request.
+
+By contributing, you agree that your contributions may become part of PrintPilot Studio under the project's license.
+
+---
+
+# 📄 License
+
+This project is licensed under a **Custom Source-Available License**.
+
+The source code is available for learning, personal evaluation, and community contributions.
+
+Commercial use, redistribution, relicensing, or creating competing products without written permission is prohibited.
+
+See the **LICENSE** file for complete terms.
 
 ---
 
@@ -147,16 +219,21 @@ npm run tauri build
 
 **Anshu Gupta**
 
-Software Engineering Student
+🌐 Portfolio  
+https://anshuuicoder.in
 
-- GitHub: https://github.com/uicoder1
-- Portfolio: coming soon
-- LinkedIn: https://www.linkedin.com/in/anshu-gupta-uicoder/
+💼 LinkedIn  
+YOUR_LINKEDIN_URL
+
+🐙 GitHub  
+https://github.com/uicoder1
 
 ---
 
-# 📄 License
+<p align="center">
 
-This project is licensed under the **PrintPilot Studio Source Available License**.
+⭐ If you like this project, consider giving it a star.
 
-See the [LICENSE](LICENSE) file for details.
+Made with ❤️ by Anshu Gupta
+
+</p>
