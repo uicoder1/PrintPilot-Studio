@@ -1,4 +1,6 @@
+# ===========================
 # Logs
+# ===========================
 logs
 *.log
 npm-debug.log*
@@ -7,18 +9,55 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# ===========================
+# Node
+# ===========================
+node_modules/
+dist/
+dist-ssr/
+
+# ===========================
+# Local Environment
+# ===========================
+.env
+.env.*
+!.env.example
 *.local
 
-# Editor directories and files
+# ===========================
+# Tauri / Rust
+# ===========================
+src-tauri/target/
+src-tauri/gen/
+
+# Rust backup files
+**/*.rs.bk
+
+# ===========================
+# Editor
+# ===========================
 .vscode/*
 !.vscode/extensions.json
-.idea
+
+.idea/
+
+# ===========================
+# OS
+# ===========================
 .DS_Store
+Thumbs.db
+
+# ===========================
+# Visual Studio
+# ===========================
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
+
+# ===========================
+# Temporary Files
+# ===========================
 *.sw?
+*.tmp
+*.temp

@@ -110,28 +110,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2a4385e2e34eb35d6b3efe798b9eb88096925d87726c0798709bf56d9ed84af3"
 
 [[package]]
-name = "app"
-version = "0.1.0"
-dependencies = [
- "ab_glyph",
- "anyhow",
- "base64 0.22.1",
- "btleplug",
- "bytes",
- "crc",
- "image",
- "log",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
- "tauri-plugin-log",
- "tokio",
- "uuid",
- "windows",
-]
-
-[[package]]
 name = "arbitrary"
 version = "1.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3058,6 +3036,28 @@ name = "precomputed-hash"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "925383efa346730478fb4838dbe9137d2a47675ad789c546d150a6e1dd4ab31c"
+
+[[package]]
+name = "printpilot-studio"
+version = "2.0.0"
+dependencies = [
+ "ab_glyph",
+ "anyhow",
+ "base64 0.22.1",
+ "btleplug",
+ "bytes",
+ "crc",
+ "image",
+ "log",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-log",
+ "tokio",
+ "uuid",
+ "windows",
+]
 
 [[package]]
 name = "proc-macro-crate"

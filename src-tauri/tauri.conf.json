@@ -1,14 +1,14 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "printpilot-studio",
-  "version": "0.1.0",
-  "identifier": "com.tauri.dev",
+  "productName": "PrintPilot Studio",
+  "version": "2.0.0",
+  "identifier": "com.uicoder1.printpilotstudio",
   "build": {
-    "frontendDist": "dist",
+    "frontendDist": "../dist",
     "devUrl": "http://localhost:5173",
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build"
-  },
+},
   "app": {
     "windows": [
       {

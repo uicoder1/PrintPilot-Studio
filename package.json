@@ -1,8 +1,30 @@
 {
   "name": "printpilot-studio",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.0.0",
+  "description": "Professional desktop software for Bluetooth thermal printing with image processing and ESC/POS support.",
   "type": "module",
+  "keywords": [
+  "thermal-printer",
+  "escpos",
+  "bluetooth",
+  "tauri",
+  "react",
+  "typescript",
+  "desktop-app",
+  "receipt-printer",
+  "label-printer",
+  "printpilot"
+],
+
+"repository": {
+  "type": "git",
+  "url": "https://github.com/uicoder1/PrintPilot-Studio.git"
+},
+
+"bugs": {
+  "url": "https://github.com/uicoder1/PrintPilot-Studio/issues"
+},
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

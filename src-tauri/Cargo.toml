@@ -1,10 +1,10 @@
 [package]
-name = "app"
-version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
+name = "printpilot-studio"
+version = "2.0.0"
+description = "Professional desktop software for Bluetooth thermal printing using ESC/POS."
+authors = ["Anshu Gupta"]
 license = ""
-repository = ""
+repository = "https://github.com/uicoder1/PrintPilot-Studio"
 edition = "2021"
 rust-version = "1.77.2"
 

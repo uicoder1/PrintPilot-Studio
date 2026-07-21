@@ -13,7 +13,7 @@ const PRINTER_WIDTH_PX = 384;
 
 export default function ImagesPage() {
   const {
-    originalImage,
+
     workingImage,
     isThermal,
     fileName,
@@ -299,7 +299,7 @@ export default function ImagesPage() {
 
 function PrinterCanvas({
   src,
-  rotateDeg,
+  
   onClick,
 }: {
   src: string | null;
