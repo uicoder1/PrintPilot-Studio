@@ -189,38 +189,67 @@ src/
 
 ---
 
-# 👨‍💻 Build from Source
+## Build from Source
 
-PrintPilot Studio is actively developed and continuously improved.
+### Tested Environment
 
-The source code is provided for learning, code review, and community contributions under the project's custom Source-Available License.
+PrintPilot Studio has been developed and tested with:
 
-Commercial use, redistribution, relicensing, or creation of competing products is prohibited without written permission from the author.
+| Tool | Version |
+|------|---------|
+| Node.js | v24.14.0 |
+| npm | v11.9.0 |
+| Rust | v1.97.0 |
+| Cargo | v1.97.0 |
+| Tauri | v2 |
 
+### Prerequisites
 
-## Clone the Repository
+Before building PrintPilot Studio, make sure you have the following installed:
+
+- Node.js **v24.14.0** or later
+- npm **v11.9.0** or later
+- Rust **v1.97.0**
+- Cargo **v1.97.0**
+- Git
+
+### Tauri Prerequisites
+
+Follow the official Tauri setup guide to install the required system dependencies:
+
+https://v2.tauri.app/start/prerequisites/
+
+### Clone the Repository
 
 ```bash
 git clone https://github.com/uicoder1/PrintPilot-Studio.git
-```
-
-## Navigate to the Project
-
-```bash
 cd PrintPilot-Studio
 ```
 
-## Install Dependencies
+### Install Dependencies
 
 ```bash
 npm install
 ```
 
-## Run the Application
+### Run in Development
 
 ```bash
 npm run tauri dev
 ```
+
+### Build for Production
+
+```bash
+npm run tauri build
+```
+
+Tested with:
+
+Node.js 22.x LTS
+npm 10.x
+Rust 1.89.0
+Tauri v2
 
 ---
 
