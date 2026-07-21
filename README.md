@@ -220,10 +220,10 @@ See the **LICENSE** file for complete terms.
 **Anshu Gupta**
 
 🌐 Portfolio  
-https://anshuuicoder.in
+Coming Soon
 
 💼 LinkedIn  
-YOUR_LINKEDIN_URL
+https://www.linkedin.com/in/anshu-gupta-uicoder/
 
 🐙 GitHub  
 https://github.com/uicoder1
