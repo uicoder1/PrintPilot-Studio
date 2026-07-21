@@ -36,6 +36,48 @@ Modern Desktop Software for Bluetooth Thermal Printers
 
 ---
 
+<h2 align="center">📥 Download</h2>
+
+<p align="center">
+Download the latest stable Windows installer from GitHub Releases.
+</p>
+
+<p align="center">
+
+[![Download for Windows](https://img.shields.io/badge/Download-Windows%20Installer-success?style=for-the-badge)](https://github.com/uicoder1/PrintPilot-Studio/releases/latest)
+
+</p>
+
+### Installation
+
+1. Download the latest **Windows Installer (.exe)**.
+2. Run the installer.
+3. Follow the installation wizard.
+4. Launch **PrintPilot Studio** from the Start Menu or Desktop shortcut.
+
+> **Note**
+>
+> Since PrintPilot Studio is currently developed by an independent developer, Windows SmartScreen may display a warning during installation because the installer is not digitally code-signed yet.
+>
+> This is expected for many independent desktop applications.
+
+---
+
+### Installation
+
+1. Download the latest **Windows Installer (.exe)**.
+2. Run the installer.
+3. Follow the installation wizard.
+4. Launch **PrintPilot Studio** from the Start Menu or Desktop shortcut.
+
+> **Note**
+>
+> Since PrintPilot Studio is currently developed by an independent developer, Windows SmartScreen may display a warning during installation because the installer is not digitally code-signed yet.
+>
+> This is expected for many independent desktop applications.
+
+---
+
 # 🚀 Overview
 
 PrintPilot Studio is a modern desktop application for Bluetooth thermal printers built with **Tauri**, **React**, **TypeScript**, and **Rust**.
@@ -147,13 +189,14 @@ src/
 
 ---
 
-# 🚀 Getting Started
+# 👨‍💻 Build from Source
 
-PrintPilot Studio is currently under active development.
+PrintPilot Studio is actively developed and continuously improved.
 
-The source code is provided for learning, code review, and community contributions under the project's custom license.
+The source code is provided for learning, code review, and community contributions under the project's custom Source-Available License.
 
 Commercial use, redistribution, relicensing, or creation of competing products is prohibited without written permission from the author.
+
 
 ## Clone the Repository
 
@@ -173,7 +216,7 @@ cd PrintPilot-Studio
 npm install
 ```
 
-## Run Development Server
+## Run the Application
 
 ```bash
 npm run tauri dev
@@ -209,9 +252,8 @@ This project is licensed under a **Custom Source-Available License**.
 
 The source code is available for learning, personal evaluation, and community contributions.
 
-Commercial use, redistribution, relicensing, or creating competing products without written permission is prohibited.
+See the **LICENSE** file for complete licensing terms and restrictions.
 
-See the **LICENSE** file for complete terms.
 
 ---
 
@@ -219,21 +261,17 @@ See the **LICENSE** file for complete terms.
 
 **Anshu Gupta**
 
-🌐 Portfolio  
-Coming Soon
-
 💼 LinkedIn  
-https://www.linkedin.com/in/anshu-gupta-uicoder/
+[Anshu Gupta](https://www.linkedin.com/in/anshu-gupta-uicoder/)
 
 🐙 GitHub  
-https://github.com/uicoder1
-
+[@uicoder1](https://github.com/uicoder1)
 ---
 
 <p align="center">
 
-⭐ If you like this project, consider giving it a star.
-
-Made with ❤️ by Anshu Gupta
+⭐ If you find this project useful, consider giving it a star.
 
 </p>
+
+---

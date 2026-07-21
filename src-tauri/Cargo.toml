@@ -1,6 +1,6 @@
 [package]
 name = "printpilot-studio"
-version = "2.0.0"
+version = "2.1.0"
 description = "Professional desktop software for Bluetooth thermal printing using ESC/POS."
 authors = ["Anshu Gupta"]
 license = ""
